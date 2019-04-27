@@ -1,0 +1,1 @@
+In this folder you should put your files of **class1** that used for training.

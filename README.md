@@ -1,7 +1,7 @@
 # misp
 Medical Image Segmentation Pipeline
 
-**Note**: `DemoDataset` folder in this repo is just to let you know how I organized my training data, therefore there is no file inside.  
+**Note**: `DemoDataset` folder in this repo is just to let you know how I organized my training data, therefore there is no "**real**" file inside.  
 
 Also, this folder structure is used as a *premise* in all my related scripts.
 

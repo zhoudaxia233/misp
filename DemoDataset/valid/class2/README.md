@@ -1,0 +1,1 @@
+In this folder you should put your files of **class2** that used for validation.

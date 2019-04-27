@@ -1,0 +1,1 @@
+You can use **arbitrary** number of classes in this folder.
