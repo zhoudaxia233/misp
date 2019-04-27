@@ -3,6 +3,7 @@ import shutil
 import random
 from pathlib import Path
 import argparse
+from tqdm import tqdm
 
 def create_tiny_dataset(src: str, dst: str, pct: float, file_format: str):
     if pct > 1 or pct < 0:
@@ -17,7 +18,7 @@ def create_tiny_dataset(src: str, dst: str, pct: float, file_format: str):
 
     candidates = os.listdir(src)
     filenames = random.sample(candidates, int(len(candidates) * pct))
-    for filename in filenames:
+    for filename in tqdm(filenames):
         if filename.endswith(file_format):
             filepath = src / filename
             shutil.copy(filepath, dst)
