@@ -7,8 +7,10 @@ def copy_dir_tree(src: str, dst: str, ignore_files: bool=False, symlinks: bool=F
     src = Path(src)
     dst = Path(dst)
 
+    print('Start copying directory tree ...')
+
     if os.path.isdir(dst):
-        os.rmdir(dst)
+        shutil.rmtree(dst)
 
     if ignore_files:
         def ignore_func(folder, folder_contents):
@@ -18,4 +20,4 @@ def copy_dir_tree(src: str, dst: str, ignore_files: bool=False, symlinks: bool=F
     else:
         shutil.copytree(src, dst, symlinks=symlinks)
 
-    print('Done.')
+    print('Copying directory tree is done.')

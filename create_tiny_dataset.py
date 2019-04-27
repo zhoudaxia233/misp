@@ -4,6 +4,7 @@ import random
 from pathlib import Path
 import argparse
 from tqdm import tqdm
+from utils import copy_dir_tree
 
 def create_tiny_dataset(src: str, dst: str, num: float, file_format: str):
     if num <= 0:
@@ -12,6 +13,12 @@ def create_tiny_dataset(src: str, dst: str, num: float, file_format: str):
     
     src = Path(src)
     dst = Path(dst)
+
+    if not os.path.isdir(src):
+        print('"src" must be a directory!')
+        return
+    
+    print('Start copying files ...')
 
     if not os.path.isdir(dst):
         os.mkdir(dst)
@@ -45,7 +52,10 @@ def main():
     src, dst, num, file_format = init()
     # -- Section starts --
     # customize here for your own folder structures
-    create_tiny_dataset(src, dst, num, file_format)
+    copy_dir_tree(src, dst, True)
+    for s, d in zip(os.listdir(src), os.listdir(dst)):
+        s_path, d_path = os.path.join(src, s), os.path.join(dst, d)
+        create_tiny_dataset(s_path, d_path, num, file_format)
     # -- Section ends --
 
 
