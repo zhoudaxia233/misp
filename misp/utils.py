@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 import torch
 import torch.nn as nn
+import torch.utils.data as data
 from typing import Union
 
 
@@ -25,14 +26,14 @@ def copy_dir_tree(src: str, dst: str, ignore_files: bool=False, symlinks: bool=F
 
     print('Copying directory tree is done.')
 
-def predict(model: nn.Module, inputs: Union[torch.Tensor, torch.utils.data.dataloader.DataLoader], device: torch.device):
+def predict(model: nn.Module, inputs: Union[torch.Tensor, data.dataloader.DataLoader], device: torch.device):
     '''If "inputs" is a dataloader, this function presumes that the dataset object has two return values,
        which means when we traverse the dataloader, each time we will get two values: input and target.
     '''
     model.eval()
     
     preds = []
-    if isinstance(inputs, torch.utils.data.dataloader.DataLoader):
+    if isinstance(inputs, data.dataloader.DataLoader):
         with torch.no_grad():
             for batch_input, _ in inputs:
                 batch_input = batch_input.to(device)

@@ -4,7 +4,7 @@ import random
 from pathlib import Path
 import argparse
 from tqdm import tqdm
-from utils import copy_dir_tree
+from misp import copy_dir_tree
 
 def create_tiny_dataset(src: str, dst: str, num: float, file_format: str):
     if num <= 0:
