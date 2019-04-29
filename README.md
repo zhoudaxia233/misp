@@ -9,7 +9,7 @@ Also, this folder structure is used as a *premise* in all my related scripts.
 ## Requirements
 1. [OpenSlide](https://openslide.org/download/)
     > If you're using Windows, remember to put it's *bin* directory in your *Environment Variables*.
-2. `openslide-python 1.1.1`
+2. openslide-python 1.1.1
    ```bash
    pip install openslide-python==1.1.1
    ```
