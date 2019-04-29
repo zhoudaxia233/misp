@@ -4,7 +4,7 @@ from sklearn.metrics import confusion_matrix
 import torch
 import torch.nn as nn
 from typing import Dict, List
-from utils import predict
+from .utils import predict
 
 
 def _get_activations(store: Dict):
