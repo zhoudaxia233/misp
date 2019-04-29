@@ -1,6 +1,9 @@
 import os
 import shutil
 from pathlib import Path
+import torch
+import torch.nn as nn
+from typing import Union
 
 
 def copy_dir_tree(src: str, dst: str, ignore_files: bool=False, symlinks: bool=False):
@@ -21,3 +24,27 @@ def copy_dir_tree(src: str, dst: str, ignore_files: bool=False, symlinks: bool=F
         shutil.copytree(src, dst, symlinks=symlinks)
 
     print('Copying directory tree is done.')
+
+def predict(model: nn.Module, inputs: Union[torch.Tensor, torch.utils.data.dataloader.DataLoader], device: torch.device):
+    '''If "inputs" is a dataloader, this function presumes that the dataset object has two return values,
+       which means when we traverse the dataloader, each time we will get two values: input and target.
+    '''
+    model.eval()
+    
+    preds = []
+    if isinstance(inputs, torch.utils.data.dataloader.DataLoader):
+        with torch.no_grad():
+            for batch_input, _ in inputs:
+                batch_input = batch_input.to(device)
+
+                outputs = model(batch_input)
+                preds.extend(outputs.argmax(dim=1).cpu().tolist())
+    elif isinstance(inputs, torch.Tensor):
+        with torch.no_grad():
+            inputs = inputs[None, ...].to(device)
+            outputs = model(inputs)
+            preds.append(outputs.argmax(dim=1).cpu().item())
+    else:
+        raise Exception(f'Your input type: {type(inputs)} is not supported.')
+    
+    return preds
