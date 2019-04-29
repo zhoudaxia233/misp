@@ -25,5 +25,5 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     python_requires='>=3.6',
-    dependency_links=[]
+    dependency_links=['https://openslide.org/download/']
 )
