@@ -11,8 +11,8 @@ if sys.argv[-1] == 'publish':
     os.system('rm -rf dist misp.egg-info')
     sys.exit()
 
-install_requires = ['numpy', 'matplotlib', 'scikit-learn', 'tqdm', 'openslide-python',
-                    'torch==1.0.1', 'torchvision==0.2.2']
+install_requires = ['numpy>=1.6.0', 'matplotlib>=3.0.1', 'scikit-learn>=0.20.2',
+                    'tqdm>=4.30.0', 'openslide-python>=1.1.1', 'torch>=1.0.1', 'torchvision>=0.2.2']
 
 setup(
     name='misp',
