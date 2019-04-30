@@ -1,5 +1,7 @@
 from torchvision import transforms
 
+__all__ = ['train_tfms', 'val_tfms']
+
 IMG_SIZE = 224
 
 train_tfms = transforms.Compose([

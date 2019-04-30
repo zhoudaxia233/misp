@@ -6,6 +6,7 @@ import torch.nn as nn
 from typing import Dict, List
 from .utils import predict
 
+__all__ = ['get_heatmap_tensor', 'detransform', 'plot_confusion_matrix']
 
 def _get_activations(store: Dict):
     def hook(module, input, output):

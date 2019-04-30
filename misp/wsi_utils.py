@@ -3,6 +3,7 @@ import openslide
 from openslide.deepzoom import DeepZoomGenerator
 from tqdm import tqdm
 
+__all__ = ['WSI', 'validate_mpp', 'stitch_tiles']
 
 class WSI():
     def __init__(self, path: str, tile_size: int=224):
