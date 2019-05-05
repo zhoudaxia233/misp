@@ -13,7 +13,9 @@ Also, this folder structure is used as a *premise* in all my related scripts.
    ```bash
    pip install openslide-python==1.1.1
    ```
-3. Other requirements will automatically be        installed when you install `misp`.
+3. [PyTorch](https://pytorch.org/get-started/locally/) 1.0.1
+
+4. Other requirements will automatically be installed when you install `misp`.
 
 ---
 ## Installation
