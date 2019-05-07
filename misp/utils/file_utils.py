@@ -4,7 +4,9 @@ from pathlib import Path
 
 __all__ = ['copy_dir_tree']
 
-def copy_dir_tree(src: str, dst: str, ignore_files: bool=False, symlinks: bool=False):
+def copy_dir_tree(src: str, dst: str, *, ignore_files: bool, symlinks: bool=False):
+    '''It copies the entire directory tree recursively.
+    '''
     src = Path(src)
     dst = Path(dst)
 
