@@ -8,7 +8,8 @@ from setuptools import setup, find_packages
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist')
     os.system('twine upload dist/*')
-    os.system('rm -rf dist misp.egg-info')
+    # os.system('rm -rf dist misp.egg-info')  # for Linux
+    os.system('rm –path dist, misp.egg-info –recurse –force')  # for Windows
     sys.exit()
 
 install_requires = ['numpy>=1.6.0', 'matplotlib>=3.0.1', 'scikit-learn>=0.20.2',
