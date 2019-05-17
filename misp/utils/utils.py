@@ -10,7 +10,7 @@ from typing import Union, Callable, Optional, Dict
 from tqdm import tqdm
 import copy
 
-__all__ = ['copy_dir_tree', 'predict', 'train_one_epoch', 'validate', 'train']
+__all__ = ['copy_dir_tree', 'get_cls_to_idx', 'predict', 'train_one_epoch', 'validate', 'train']
 
 def copy_dir_tree(src: str, dst: str, ignore_files: bool=False, symlinks: bool=False):
     src = Path(src)
@@ -30,6 +30,12 @@ def copy_dir_tree(src: str, dst: str, ignore_files: bool=False, symlinks: bool=F
         shutil.copytree(src, dst, symlinks=symlinks)
 
     print('Copying directory tree is done.')
+
+def get_cls_to_idx(dir: Union[str, Path]):
+    classes = [d.name for d in os.scandir(dir) if d.is_dir()]
+    classes.sort()
+    cls_to_idx = {classes[i]: i for i in range(len(classes))}
+    return cls_to_idx
 
 def predict(model: nn.Module, inputs: Union[torch.Tensor, data.dataloader.DataLoader], device: torch.device):
     '''If "inputs" is a dataloader, this function presumes that the dataset object has two return values,
