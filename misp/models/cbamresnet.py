@@ -4,6 +4,7 @@ from torchvision.models import ResNet
 
 __all__ = ['cbamresnet25']
 
+
 class PreActCbamBlock(nn.Module):
     expansion = 1
 
@@ -28,11 +29,11 @@ class PreActCbamBlock(nn.Module):
 
     def forward(self, x):
         identity = x
-        
+
         out = self.bn1(x)
         out = self.relu(out)
         out = self.conv1(out)
-        
+
         out = self.bn2(out)
         out = self.relu(out)
         out = self.conv2(out)
@@ -90,4 +91,3 @@ def cbamresnet25(output_dim: int) -> nn.Module:
     model = ResNet(PreActCbamBlock, [1, 1, 1, 1])
     model.fc = nn.Linear(model.fc.in_features, output_dim)
     return model
-

@@ -6,18 +6,19 @@ import argparse
 from tqdm import tqdm
 from misp.utils import copy_dir_tree
 
+
 def create_tiny_dataset(src: str, dst: str, num: float, file_format: str):
     if num <= 0:
         print('"num" must be greater than zero!')
         return
-    
+
     src = Path(src)
     dst = Path(dst)
 
     if not os.path.isdir(src):
         print('"src" must be a directory!')
         return
-    
+
     print('Start copying files ...')
 
     if not os.path.isdir(dst):
@@ -30,12 +31,13 @@ def create_tiny_dataset(src: str, dst: str, num: float, file_format: str):
     else:
         # sample by number
         filenames = random.sample(candidates, int(num))
-    
+
     for filename in tqdm(filenames):
         if filename.endswith(file_format):
             filepath = src / filename
             shutil.copy(filepath, dst)
     print('Done.')
+
 
 def init():
     parser = argparse.ArgumentParser()
@@ -47,6 +49,7 @@ def init():
                         type=str, default='.tif')
     args = parser.parse_args()
     return args.src, args.dst, args.num, args.file_format
+
 
 def main():
     src, dst, num, file_format = init()

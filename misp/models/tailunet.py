@@ -1,8 +1,10 @@
 import torch
 import torch.nn as nn
 from torchvision.models import resnet18, resnet34, resnet50, resnet101, resnet152
+from torchvision.models import vgg13_bn
 
-__all__ = ['tailunet', 'tailresunet18', 'tailresunet34', 'tailresunet50', 'tailresunet101', 'tailresunet152']
+__all__ = ['tailunet', 'tailresunet18', 'tailresunet34', 'tailresunet50', 'tailresunet101', 'tailresunet152',
+           'tailvggunet13']
 
 
 def double_conv(in_channels, out_channels):
@@ -15,10 +17,12 @@ def double_conv(in_channels, out_channels):
         nn.ReLU(inplace=True)
     )
 
+
 def up_conv(in_channels, out_channels):
     return nn.ConvTranspose2d(
         in_channels, out_channels, kernel_size=2, stride=2
     )
+
 
 def custom_head(in_channels, out_channels):
     return nn.Sequential(
@@ -30,6 +34,7 @@ def custom_head(in_channels, out_channels):
         nn.Dropout(),
         nn.Linear(512, out_channels)
     )
+
 
 class TailUnet(nn.Module):
     def __init__(self, out_channels):
@@ -50,9 +55,9 @@ class TailUnet(nn.Module):
         self.conv8 = double_conv(128, 64)
         self.custom_head = custom_head(64 * 2, out_channels)
         self.maxpool = nn.MaxPool2d(kernel_size=2)
-        
+
         self._weights_init()
-    
+
     def _weights_init(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -60,17 +65,17 @@ class TailUnet(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
-    
+
     def forward(self, x):
         conv1 = self.conv1(x)
         x = self.maxpool(conv1)
 
         conv2 = self.conv2(x)
         x = self.maxpool(conv2)
-        
+
         conv3 = self.conv3(x)
         x = self.maxpool(conv3)
-        
+
         conv4 = self.conv4(x)
         x = self.maxpool(conv4)
 
@@ -91,20 +96,22 @@ class TailUnet(nn.Module):
         x = self.up_conv8(x)
         x = torch.cat([x, conv1], dim=1)
         x = self.conv8(x)
-        
+
         mp = nn.AdaptiveMaxPool2d(output_size=(1, 1))(x)
         ap = nn.AdaptiveAvgPool2d(output_size=(1, 1))(x)
         x = torch.cat([mp, ap], dim=1)
-        
+
         x = x.view(x.size(0), -1)
-        
+
         x = self.custom_head(x)
 
         return x
 
+
 class STailResUnet(nn.Module):
-    '''Shallow TailResUnet with ResNet18 or ResNet34 encoder.
-    '''
+    """Shallow TailResUnet with ResNet18 or ResNet34 encoder.
+    """
+
     def __init__(self, encoder, *, out_channels, pretrained=False):
         super().__init__()
         self.encoder = encoder(pretrained=pretrained)
@@ -138,7 +145,7 @@ class STailResUnet(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
-    
+
     def forward(self, x):
         block1 = self.block1(x)
         block2 = self.block2(block1)
@@ -164,20 +171,22 @@ class STailResUnet(nn.Module):
 
         x = self.up_conv10(x)
         x = self.conv10(x)
-        
+
         mp = nn.AdaptiveMaxPool2d(output_size=(1, 1))(x)
         ap = nn.AdaptiveAvgPool2d(output_size=(1, 1))(x)
         x = torch.cat([mp, ap], dim=1)
-        
+
         x = x.view(x.size(0), -1)
-        
+
         x = self.custom_head(x)
 
         return x
 
+
 class DTailResUnet(nn.Module):
-    '''Deep TailResUnet with ResNet50, ResNet101 or ResNet152 encoder.
-    '''
+    """Deep TailResUnet with ResNet50, ResNet101 or ResNet152 encoder.
+    """
+
     def __init__(self, encoder, *, out_channels, pretrained=False):
         super().__init__()
         self.encoder = encoder(pretrained=pretrained)
@@ -211,7 +220,7 @@ class DTailResUnet(nn.Module):
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
-    
+
     def forward(self, x):
         block1 = self.block1(x)
         block2 = self.block2(block1)
@@ -237,31 +246,99 @@ class DTailResUnet(nn.Module):
 
         x = self.up_conv10(x)
         x = self.conv10(x)
-        
+
         mp = nn.AdaptiveMaxPool2d(output_size=(1, 1))(x)
         ap = nn.AdaptiveAvgPool2d(output_size=(1, 1))(x)
         x = torch.cat([mp, ap], dim=1)
-        
+
         x = x.view(x.size(0), -1)
-        
+
         x = self.custom_head(x)
 
         return x
 
+
+class TailVGGUnet(nn.Module):
+    """TailVGGUnet with VGG-13 (with BN) encoder.
+    """
+
+    def __init__(self, *, out_channels, pretrained=False):
+        super().__init__()
+
+        self.encoder = vgg13_bn(pretrained=pretrained).features
+        self.block1 = nn.Sequential(*self.encoder[:6])
+        self.block2 = nn.Sequential(*self.encoder[6:13])
+        self.block3 = nn.Sequential(*self.encoder[13:20])
+        self.block4 = nn.Sequential(*self.encoder[20:27])
+        self.block5 = nn.Sequential(*self.encoder[27:34])
+
+        self.up_conv6 = up_conv(512, 512)
+        self.conv6 = double_conv(1024, 512)
+        self.up_conv7 = up_conv(512, 256)
+        self.conv7 = double_conv(512, 256)
+        self.up_conv8 = up_conv(256, 128)
+        self.conv8 = double_conv(256, 128)
+        self.up_conv9 = up_conv(128, 64)
+        self.conv9 = double_conv(128, 64)
+        self.custom_head = custom_head(64 * 2, out_channels)
+
+    def forward(self, x):
+        block1 = self.block1(x)
+        block2 = self.block2(block1)
+        block3 = self.block3(block2)
+        block4 = self.block4(block3)
+        block5 = self.block5(block4)
+
+        x = self.up_conv6(block5)
+        x = torch.cat([x, block4], dim=1)
+        x = self.conv6(x)
+
+        x = self.up_conv7(x)
+        x = torch.cat([x, block3], dim=1)
+        x = self.conv7(x)
+
+        x = self.up_conv8(x)
+        x = torch.cat([x, block2], dim=1)
+        x = self.conv8(x)
+
+        x = self.up_conv9(x)
+        x = torch.cat([x, block1], dim=1)
+        x = self.conv9(x)
+
+        mp = nn.AdaptiveMaxPool2d(output_size=(1, 1))(x)
+        ap = nn.AdaptiveAvgPool2d(output_size=(1, 1))(x)
+        x = torch.cat([mp, ap], dim=1)
+
+        x = x.view(x.size(0), -1)
+
+        x = self.custom_head(x)
+
+        return x
+
+
 def tailunet(output_dim: int) -> nn.Module:
     return TailUnet(out_channels=output_dim)
 
-def tailresunet18(output_dim: int, pretrained: bool=False) -> nn.Module:
+
+def tailresunet18(output_dim: int, pretrained: bool = False) -> nn.Module:
     return STailResUnet(resnet18, out_channels=output_dim, pretrained=pretrained)
 
-def tailresunet34(output_dim: int, pretrained: bool=False) -> nn.Module:
+
+def tailresunet34(output_dim: int, pretrained: bool = False) -> nn.Module:
     return STailResUnet(resnet34, out_channels=output_dim, pretrained=pretrained)
 
-def tailresunet50(output_dim: int, pretrained: bool=False) -> nn.Module:
+
+def tailresunet50(output_dim: int, pretrained: bool = False) -> nn.Module:
     return DTailResUnet(resnet50, out_channels=output_dim, pretrained=pretrained)
 
-def tailresunet101(output_dim: int, pretrained: bool=False) -> nn.Module:
+
+def tailresunet101(output_dim: int, pretrained: bool = False) -> nn.Module:
     return DTailResUnet(resnet101, out_channels=output_dim, pretrained=pretrained)
 
-def tailresunet152(output_dim: int, pretrained: bool=False) -> nn.Module:
+
+def tailresunet152(output_dim: int, pretrained: bool = False) -> nn.Module:
     return DTailResUnet(resnet152, out_channels=output_dim, pretrained=pretrained)
+
+
+def tailvggunet13(output_dim: int, pretrained: bool = False) -> nn.Module:
+    return TailVGGUnet(out_channels=output_dim, pretrained=pretrained)
