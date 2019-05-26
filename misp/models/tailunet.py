@@ -1,10 +1,10 @@
 import torch
 import torch.nn as nn
 from torchvision.models import resnet18, resnet34, resnet50, resnet101, resnet152
-from torchvision.models import vgg13_bn
+from torchvision.models import vgg13_bn, vgg16_bn
 
 __all__ = ['tailunet', 'tailresunet18', 'tailresunet34', 'tailresunet50', 'tailresunet101', 'tailresunet152',
-           'tailvggunet13']
+           'tailvggunet13', 'tailvggunet16']
 
 
 def double_conv(in_channels, out_channels):
@@ -259,13 +259,13 @@ class DTailResUnet(nn.Module):
 
 
 class TailVGGUnet(nn.Module):
-    """TailVGGUnet with VGG-13 (with BN) encoder.
+    """TailVGGUnet with VGG-13 (with BN), VGG-16 (with BN) encoder.
     """
 
-    def __init__(self, *, out_channels, pretrained=False):
+    def __init__(self, encoder, *, out_channels, pretrained=False):
         super().__init__()
 
-        self.encoder = vgg13_bn(pretrained=pretrained).features
+        self.encoder = encoder(pretrained=pretrained).features
         self.block1 = nn.Sequential(*self.encoder[:6])
         self.block2 = nn.Sequential(*self.encoder[6:13])
         self.block3 = nn.Sequential(*self.encoder[13:20])
@@ -341,4 +341,9 @@ def tailresunet152(output_dim: int, pretrained: bool = False) -> nn.Module:
 
 
 def tailvggunet13(output_dim: int, pretrained: bool = False) -> nn.Module:
-    return TailVGGUnet(out_channels=output_dim, pretrained=pretrained)
+    return TailVGGUnet(vgg13_bn, out_channels=output_dim, pretrained=pretrained)
+
+
+def tailvggunet16(output_dim: int, pretrained: bool = False) -> nn.Module:
+    return TailVGGUnet(vgg16_bn, out_channels=output_dim, pretrained=pretrained)
+
