@@ -272,15 +272,20 @@ class TailVGGUnet(nn.Module):
         self.block4 = nn.Sequential(*self.encoder[20:27])
         self.block5 = nn.Sequential(*self.encoder[27:34])
 
-        self.up_conv6 = up_conv(512, 512)
-        self.conv6 = double_conv(1024, 512)
+        self.bottleneck = nn.Sequential(*self.encoder[34:])
+        self.conv_bottleneck = double_conv(512, 1024)
+
+        self.up_conv6 = up_conv(1024, 512)
+        self.conv6 = double_conv(512 + 512, 512)
         self.up_conv7 = up_conv(512, 256)
-        self.conv7 = double_conv(512, 256)
+        self.conv7 = double_conv(256 + 512, 256)
         self.up_conv8 = up_conv(256, 128)
-        self.conv8 = double_conv(256, 128)
+        self.conv8 = double_conv(128 + 256, 128)
         self.up_conv9 = up_conv(128, 64)
-        self.conv9 = double_conv(128, 64)
-        self.custom_head = custom_head(64 * 2, out_channels)
+        self.conv9 = double_conv(64 + 128, 64)
+        self.up_conv10 = up_conv(64, 32)
+        self.conv10 = double_conv(32 + 64, 32)
+        self.custom_head = custom_head(32 * 2, out_channels)
 
     def forward(self, x):
         block1 = self.block1(x)
@@ -289,21 +294,28 @@ class TailVGGUnet(nn.Module):
         block4 = self.block4(block3)
         block5 = self.block5(block4)
 
-        x = self.up_conv6(block5)
-        x = torch.cat([x, block4], dim=1)
+        bottleneck = self.bottleneck(block5)
+        x = self.conv_bottleneck(bottleneck)
+
+        x = self.up_conv6(x)
+        x = torch.cat([x, block5], dim=1)
         x = self.conv6(x)
 
         x = self.up_conv7(x)
-        x = torch.cat([x, block3], dim=1)
+        x = torch.cat([x, block4], dim=1)
         x = self.conv7(x)
 
         x = self.up_conv8(x)
-        x = torch.cat([x, block2], dim=1)
+        x = torch.cat([x, block3], dim=1)
         x = self.conv8(x)
 
         x = self.up_conv9(x)
-        x = torch.cat([x, block1], dim=1)
+        x = torch.cat([x, block2], dim=1)
         x = self.conv9(x)
+
+        x = self.up_conv10(x)
+        x = torch.cat([x, block1], dim=1)
+        x = self.conv10(x)
 
         mp = nn.AdaptiveMaxPool2d(output_size=(1, 1))(x)
         ap = nn.AdaptiveAvgPool2d(output_size=(1, 1))(x)
