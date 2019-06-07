@@ -55,7 +55,7 @@ def main():
     src, dst, num, file_format = init()
     # -- Section starts --
     # customize here for your own folder structures
-    copy_dir_tree(src, dst, True)
+    copy_dir_tree(src, dst, ignore_files=True)
     for s, d in zip(os.listdir(src), os.listdir(dst)):
         s_path, d_path = os.path.join(src, s), os.path.join(dst, d)
         create_tiny_dataset(s_path, d_path, num, file_format)
