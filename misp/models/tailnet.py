@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 from .tailunet import double_conv, custom_head
 
+__all__ = ['tailnet_for_tailunet', 'tailnet_for_tailresunet', 'tailnet_for_tailvggunet']
+
 
 class TailNet(nn.Module):
     """Used for comparison with TailUnet.
@@ -34,3 +36,15 @@ class TailNet(nn.Module):
         x = self.custom_head(x)
 
         return x
+
+
+def tailnet_for_tailunet(*, n_classes: int):
+    return TailNet(64, n_classes)
+
+
+def tailnet_for_tailresunet(*, n_classes: int):
+    return TailNet(32, n_classes)
+
+
+def tailnet_for_tailvggunet(*, n_classes: int):
+    return TailNet(32, n_classes)
