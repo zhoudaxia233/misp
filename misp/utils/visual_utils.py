@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import torch
 import torch.nn as nn
-from typing import Dict, List
+from typing import Dict, Tuple
 from .utils import predict
 
 __all__ = ['get_heatmap_tensor', 'detransform', 'plot_confusion_matrix']
@@ -80,7 +80,7 @@ def get_heatmap_tensor(model: nn.Module, layer: nn.Module, dataset: torch.utils.
     return heatmap_relu
 
 
-def detransform(img, mean: List = [0.485, 0.456, 0.406], std: List = [0.229, 0.224, 0.225]):
+def detransform(img, mean: Tuple = (0.485, 0.456, 0.406), std: Tuple = (0.229, 0.224, 0.225)):
     '''Detransform an img of a pytorch dataset.
     '''
     mean = torch.tensor(mean)

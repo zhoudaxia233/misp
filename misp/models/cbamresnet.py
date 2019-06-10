@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torchvision.models import ResNet
 
-__all__ = ['cbamresnet25']
+__all__ = ['cbamresnet10']
 
 
 class PreActCbamBlock(nn.Module):
@@ -11,6 +11,7 @@ class PreActCbamBlock(nn.Module):
     def __init__(self, inplanes, planes, stride=1, downsample=None, groups=1,
                  base_width=64, dilation=1, norm_layer=None):
         super().__init__()
+
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
         if groups != 1 or base_width != 64:
@@ -56,9 +57,9 @@ class ChannelAttention(nn.Module):
         self.avg_pool = nn.AdaptiveAvgPool2d(1)
         self.max_pool = nn.AdaptiveMaxPool2d(1)
 
-        self.fc1 = nn.Conv2d(inplanes, inplanes // 16, 1, bias=False)
+        self.fc1 = nn.Conv2d(inplanes, inplanes // ratio, 1, bias=False)
         self.relu = nn.ReLU(inplace=True)
-        self.fc2 = nn.Conv2d(inplanes // 16, inplanes, 1, bias=False)
+        self.fc2 = nn.Conv2d(inplanes // ratio, inplanes, 1, bias=False)
 
         self.sigmoid = nn.Sigmoid()
 
@@ -87,7 +88,7 @@ class SpatialAttention(nn.Module):
         return self.sigmoid(x)
 
 
-def cbamresnet25(output_dim: int) -> nn.Module:
+def cbamresnet10(n_classes: int) -> nn.Module:
     model = ResNet(PreActCbamBlock, [1, 1, 1, 1])
-    model.fc = nn.Linear(model.fc.in_features, output_dim)
+    model.fc = nn.Linear(model.fc.in_features, n_classes)
     return model

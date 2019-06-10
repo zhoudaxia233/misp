@@ -328,34 +328,34 @@ class TailVGGUnet(nn.Module):
         return x
 
 
-def tailunet(output_dim: int) -> nn.Module:
-    return TailUnet(out_channels=output_dim)
+def tailunet(n_classes: int) -> nn.Module:
+    return TailUnet(out_channels=n_classes)
 
 
-def tailresunet18(output_dim: int, pretrained: bool = False) -> nn.Module:
-    return STailResUnet(resnet18, out_channels=output_dim, pretrained=pretrained)
+def tailresunet18(n_classes: int, pretrained: bool = False) -> nn.Module:
+    return STailResUnet(resnet18, out_channels=n_classes, pretrained=pretrained)
 
 
-def tailresunet34(output_dim: int, pretrained: bool = False) -> nn.Module:
-    return STailResUnet(resnet34, out_channels=output_dim, pretrained=pretrained)
+def tailresunet34(n_classes: int, pretrained: bool = False) -> nn.Module:
+    return STailResUnet(resnet34, out_channels=n_classes, pretrained=pretrained)
 
 
-def tailresunet50(output_dim: int, pretrained: bool = False) -> nn.Module:
-    return DTailResUnet(resnet50, out_channels=output_dim, pretrained=pretrained)
+def tailresunet50(n_classes: int, pretrained: bool = False) -> nn.Module:
+    return DTailResUnet(resnet50, out_channels=n_classes, pretrained=pretrained)
 
 
-def tailresunet101(output_dim: int, pretrained: bool = False) -> nn.Module:
-    return DTailResUnet(resnet101, out_channels=output_dim, pretrained=pretrained)
+def tailresunet101(n_classes: int, pretrained: bool = False) -> nn.Module:
+    return DTailResUnet(resnet101, out_channels=n_classes, pretrained=pretrained)
 
 
-def tailresunet152(output_dim: int, pretrained: bool = False) -> nn.Module:
-    return DTailResUnet(resnet152, out_channels=output_dim, pretrained=pretrained)
+def tailresunet152(n_classes: int, pretrained: bool = False) -> nn.Module:
+    return DTailResUnet(resnet152, out_channels=n_classes, pretrained=pretrained)
 
 
-def tailvggunet13(output_dim: int, pretrained: bool = False) -> nn.Module:
-    return TailVGGUnet(vgg13_bn, out_channels=output_dim, pretrained=pretrained)
+def tailvggunet13(n_classes: int, pretrained: bool = False) -> nn.Module:
+    return TailVGGUnet(vgg13_bn, out_channels=n_classes, pretrained=pretrained)
 
 
-def tailvggunet16(output_dim: int, pretrained: bool = False) -> nn.Module:
-    return TailVGGUnet(vgg16_bn, out_channels=output_dim, pretrained=pretrained)
+def tailvggunet16(n_classes: int, pretrained: bool = False) -> nn.Module:
+    return TailVGGUnet(vgg16_bn, out_channels=n_classes, pretrained=pretrained)
 
