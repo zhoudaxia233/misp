@@ -80,11 +80,11 @@ def train_one_epoch(model: nn.Module, train_dl: data.dataloader.DataLoader, crit
 
 
 def validate(model: nn.Module, val_dl: data.dataloader.DataLoader, criterion: Callable,
-             device: torch.device, confusion_matrix: Optional[Dict] = None) -> Dict[str, float]:
+             device: torch.device, need_confusion_matrix: bool = False) -> Dict[str, float]:
     model.eval()
     tqdm_val_dl = tqdm(val_dl)
     running_losses, running_corrects = 0.0, 0
-    need_cm = True if confusion_matrix else False
+    confusion_matrix = {'targets': [], 'preds': []}
 
     with torch.no_grad():
         for batch_nr, (inputs, targets) in enumerate(tqdm_val_dl):
@@ -95,13 +95,7 @@ def validate(model: nn.Module, val_dl: data.dataloader.DataLoader, criterion: Ca
             preds = outputs.argmax(dim=1)
             loss = criterion(outputs, targets)
 
-            # if need confusion matrix
-            if need_cm:
-                if batch_nr == 0:
-                    assert isinstance(confusion_matrix, dict)
-                    assert set(confusion_matrix.keys()) == {'targets', 'preds'}
-                    assert list(confusion_matrix.values()) == [[], []]
-
+            if need_confusion_matrix:
                 confusion_matrix['targets'].extend(targets.tolist())
                 confusion_matrix['preds'].extend(preds.tolist())
 
@@ -115,7 +109,7 @@ def validate(model: nn.Module, val_dl: data.dataloader.DataLoader, criterion: Ca
     val_acc = running_corrects / len(val_dl.dataset)
     tqdm_val_dl.write(f"val loss: {val_loss:.3f} val acc: {val_acc:.3f} ")
     tqdm_val_dl.close()
-    return {'val_loss': val_loss, 'val_acc': val_acc}
+    return {'val_loss': val_loss, 'val_acc': val_acc, 'confusion_matrix': confusion_matrix}
 
 
 def train(model: nn.Module, train_dl: data.dataloader.DataLoader, val_dl: data.dataloader.DataLoader,
