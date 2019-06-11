@@ -1,16 +1,18 @@
 import os
-import shutil
 from pathlib import Path
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data as data
+from torchvision import datasets
 import numpy as np
 from typing import Union, Callable, Optional, Dict
 from tqdm import tqdm
+from collections import namedtuple
 import copy
 
-__all__ = ['get_cls_to_idx', 'predict', 'train_one_epoch', 'validate', 'train']
+__all__ = ['get_cls_to_idx', 'predict', 'train_one_epoch', 'validate', 'train', 'crc_dataset_and_loader',
+           'train_data_obj', 'val_data_obj']
 
 
 def get_cls_to_idx(dir: Union[str, Path]):
@@ -155,3 +157,21 @@ def train(model: nn.Module, train_dl: data.dataloader.DataLoader, val_dl: data.d
 
     model.load_state_dict(best_model_wts)
     return model
+
+
+def crc_dataset_and_loader(data_path, transforms, batch_size, shuffle, num_workers, drop_last):
+    dataobj = namedtuple('dataobj', ['dataset', 'dataloader'])
+    dataset = datasets.ImageFolder(root=data_path, transform=transforms)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers,
+                                             drop_last=drop_last)
+    return dataobj(dataset=dataset, dataloader=dataloader)
+
+
+def train_data_obj(train_path, transforms, batch_size, shuffle=True, num_workers=0, drop_last=True):
+    return crc_dataset_and_loader(train_path, transforms, batch_size, shuffle=shuffle, num_workers=num_workers,
+                                  drop_last=drop_last)
+
+
+def val_data_obj(val_path, transforms, batch_size, shuffle=False, num_workers=0, drop_last=False):
+    return crc_dataset_and_loader(val_path, transforms, batch_size, shuffle=shuffle, num_workers=num_workers,
+                                  drop_last=drop_last)
