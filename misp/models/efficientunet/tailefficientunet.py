@@ -2,9 +2,9 @@ from collections import OrderedDict
 from .layers import *
 from .efficientnet import EfficientNet
 
-__all__ = ['EfficientUnet', 'get_tailefficientunet_b0', 'get_tailefficientunet_b1', 'get_tailefficientunet_b2',
-           'get_tailefficientunet_b3', 'get_tailefficientunet_b4', 'get_tailefficientunet_b5',
-           'get_tailefficientunet_b6', 'get_tailefficientunet_b7']
+__all__ = ['EfficientUnet', 'tailefficientunet_b0', 'tailefficientunet_b1', 'tailefficientunet_b2',
+           'tailefficientunet_b3', 'tailefficientunet_b4', 'tailefficientunet_b5', 'tailefficientunet_b6',
+           'tailefficientunet_b7']
 
 
 def get_blocks_to_be_concat(model, x):
@@ -106,49 +106,49 @@ class EfficientUnet(nn.Module):
         return x
 
 
-def get_tailefficientunet_b0(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b0(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
     encoder = EfficientNet.encoder('efficientnet-b0', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def get_tailefficientunet_b1(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b1(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
     encoder = EfficientNet.encoder('efficientnet-b1', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def get_tailefficientunet_b2(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b2(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
     encoder = EfficientNet.encoder('efficientnet-b2', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def get_tailefficientunet_b3(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b3(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
     encoder = EfficientNet.encoder('efficientnet-b3', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def get_tailefficientunet_b4(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b4(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
     encoder = EfficientNet.encoder('efficientnet-b4', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def get_tailefficientunet_b5(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b5(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
     encoder = EfficientNet.encoder('efficientnet-b5', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def get_tailefficientunet_b6(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b6(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
     encoder = EfficientNet.encoder('efficientnet-b6', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def get_tailefficientunet_b7(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b7(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
     encoder = EfficientNet.encoder('efficientnet-b7', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
