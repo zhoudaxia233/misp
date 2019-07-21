@@ -77,8 +77,13 @@ def train_one_epoch(model: nn.Module, train_dl: data.dataloader.DataLoader, crit
     lr = [optimizer.param_groups[i]['lr'] for i in range(len(optimizer.param_groups))]
     if len(lr) == 1:
         lr = lr[0]
-    tqdm_train_dl.write(f"lr: {lr} train loss: {np.mean(losses):.3f} train acc: {np.mean(accs):.3f} ")
+
+    avg_loss = np.mean(losses)
+    avg_acc = np.mean(accs)
+
+    tqdm_train_dl.write(f"lr: {lr} train loss: {avg_loss:.3f} train acc: {avg_acc:.3f} ")
     tqdm_train_dl.close()
+    return {'train_loss': avg_loss, 'train_acc': avg_acc, 'lr': lr}
 
 
 def validate(model: nn.Module, val_dl: data.dataloader.DataLoader, criterion: Callable,
