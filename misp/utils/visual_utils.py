@@ -6,7 +6,7 @@ import torch.nn as nn
 from typing import Dict, Tuple
 from .utils import predict
 
-__all__ = ['get_heatmap_tensor', 'detransform', 'plot_confusion_matrix']
+__all__ = ['get_heatmap_tensor', 'detransform', 'plot_confusion_matrix', 'plot_stats']
 
 
 def _get_activations(store: Dict):
@@ -124,3 +124,26 @@ def plot_confusion_matrix(y_true, y_pred, classes, cmap=plt.cm.Blues):
                     color="white" if cm[i, j] > thresh else "black")
     fig.tight_layout()
     return ax
+
+
+def plot_stats(stats, typ='loss'):
+    epochs = len(list(stats.values())[0])
+    x = range(epochs)
+    if typ == 'loss':
+        plt.plot(x, stats['train_loss'], label='train')
+        plt.plot(x, stats['val_loss'], label='val')
+        plt.ylabel('Loss')
+    elif typ == 'acc':
+        plt.plot(x, stats['train_acc'], label='train')
+        plt.plot(x, stats['val_acc'], label='val')
+        plt.ylabel('Accuracy')
+    elif typ == 'lr':
+        plt.plot(x, stats['lr'], label='lr')
+        plt.ylabel('Learning Rate')
+    else:
+        raise ValueError('Typ should be one of {loss, acc, lr}.')
+
+    plt.xticks(x)
+    plt.xlabel('Epoch')
+    plt.legend()
+    plt.show()
