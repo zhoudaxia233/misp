@@ -8,7 +8,7 @@ from torchvision import datasets
 import numpy as np
 from typing import Union, Callable, Optional, Dict
 from tqdm import tqdm
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 import copy
 
 __all__ = ['get_cls_to_idx', 'predict', 'train_one_epoch', 'validate', 'train', 'crc_dataset_and_loader',
@@ -121,17 +121,25 @@ def validate(model: nn.Module, val_dl: data.dataloader.DataLoader, criterion: Ca
 
 def train(model: nn.Module, train_dl: data.dataloader.DataLoader, val_dl: data.dataloader.DataLoader,
           criterion: Callable, optimizer: optim.Optimizer, scheduler: Optional[object], epochs: int,
-          device: torch.device):
+          device: torch.device, use_best: bool = True):
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
+    stats = defaultdict(list)
 
     if not scheduler:
         for epoch in range(epochs):
             print(f'Epoch {epoch}: ')
-            train_one_epoch(model, train_dl, criterion, optimizer, device)
+            train_result = train_one_epoch(model, train_dl, criterion, optimizer, device)
             val_result = validate(model, val_dl, criterion, device)
 
-            if val_result['val_acc'] > best_acc:
+            # write stats
+            stats['train_loss'].append(train_result['train_loss'])
+            stats['train_acc'].append(train_result['train_acc'])
+            stats['lr'].append(train_result['lr'])
+            stats['val_loss'].append(val_result['val_loss'])
+            stats['val_acc'].append(val_result['val_acc'])
+
+            if use_best and (val_result['val_acc'] > best_acc):
                 print(f'Better model saved at epoch {epoch}...')
                 best_acc = val_result['val_acc']
                 best_model_wts = copy.deepcopy(model.state_dict())
@@ -139,11 +147,18 @@ def train(model: nn.Module, train_dl: data.dataloader.DataLoader, val_dl: data.d
     elif isinstance(scheduler, optim.lr_scheduler.ReduceLROnPlateau):
         for epoch in range(epochs):
             print(f'Epoch {epoch}: ')
-            train_one_epoch(model, train_dl, criterion, optimizer, device)
+            train_result = train_one_epoch(model, train_dl, criterion, optimizer, device)
             val_result = validate(model, val_dl, criterion, device)
             scheduler.step(val_result['val_acc'])
 
-            if val_result['val_acc'] > best_acc:
+            # write stats
+            stats['train_loss'].append(train_result['train_loss'])
+            stats['train_acc'].append(train_result['train_acc'])
+            stats['lr'].append(train_result['lr'])
+            stats['val_loss'].append(val_result['val_loss'])
+            stats['val_acc'].append(val_result['val_acc'])
+
+            if use_best and (val_result['val_acc'] > best_acc):
                 print(f'Better model saved at epoch {epoch}...')
                 best_acc = val_result['val_acc']
                 best_model_wts = copy.deepcopy(model.state_dict())
@@ -151,17 +166,26 @@ def train(model: nn.Module, train_dl: data.dataloader.DataLoader, val_dl: data.d
     else:
         for epoch in range(epochs):
             print(f'Epoch {epoch}: ')
-            train_one_epoch(model, train_dl, criterion, optimizer, device)
+            train_result = train_one_epoch(model, train_dl, criterion, optimizer, device)
             val_result = validate(model, val_dl, criterion, device)
             scheduler.step()
 
-            if val_result['val_acc'] > best_acc:
+            # write stats
+            stats['train_loss'].append(train_result['train_loss'])
+            stats['train_acc'].append(train_result['train_acc'])
+            stats['lr'].append(train_result['lr'])
+            stats['val_loss'].append(val_result['val_loss'])
+            stats['val_acc'].append(val_result['val_acc'])
+
+            if use_best and (val_result['val_acc'] > best_acc):
                 print(f'Better model saved at epoch {epoch}...')
                 best_acc = val_result['val_acc']
                 best_model_wts = copy.deepcopy(model.state_dict())
 
-    model.load_state_dict(best_model_wts)
-    return model
+    if use_best:
+        model.load_state_dict(best_model_wts)
+
+    return stats
 
 
 def crc_dataset_and_loader(data_path, transforms, batch_size, shuffle, num_workers, drop_last):
