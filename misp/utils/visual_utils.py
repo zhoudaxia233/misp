@@ -126,7 +126,7 @@ def plot_confusion_matrix(y_true, y_pred, classes, cmap=plt.cm.Blues):
     return ax
 
 
-def plot_stats(stats, typ='loss', y_range=None):
+def plot_stats(stats, typ='loss', y_range=None, filename=None):
     epochs = len(list(stats.values())[0])
     x = range(epochs)
     if typ == 'loss':
@@ -149,4 +149,7 @@ def plot_stats(stats, typ='loss', y_range=None):
     plt.xticks(x)
     plt.xlabel('Epoch')
     plt.legend()
-    plt.show()
+    if not filename:
+        plt.savefig(typ)
+    else:
+        plt.savefig(filename)
