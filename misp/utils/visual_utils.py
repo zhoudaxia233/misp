@@ -146,7 +146,7 @@ def plot_stats(stats, typ='loss', y_range=None, filename=None):
     else:
         raise ValueError('Typ should be one of {loss, acc, lr}.')
 
-    plt.xticks(x)
+    plt.xticks(x, rotation=45, ha="right", rotation_mode="anchor")
     plt.xlabel('Epoch')
     plt.legend()
     if not filename:
