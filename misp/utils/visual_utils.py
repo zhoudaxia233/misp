@@ -126,20 +126,23 @@ def plot_confusion_matrix(y_true, y_pred, classes, cmap=plt.cm.Blues):
     return ax
 
 
-def plot_stats(stats, typ='loss'):
+def plot_stats(stats, typ='loss', y_range=(0.0, 2.0)):
     epochs = len(list(stats.values())[0])
     x = range(epochs)
     if typ == 'loss':
         plt.plot(x, stats['train_loss'], label='train')
         plt.plot(x, stats['val_loss'], label='val')
         plt.ylabel('Loss')
+        plt.ylim(y_range)
     elif typ == 'acc':
         plt.plot(x, stats['train_acc'], label='train')
         plt.plot(x, stats['val_acc'], label='val')
         plt.ylabel('Accuracy')
+        plt.ylim(y_range)
     elif typ == 'lr':
         plt.plot(x, stats['lr'], label='lr')
         plt.ylabel('Learning Rate')
+        plt.ylim(y_range)
     else:
         raise ValueError('Typ should be one of {loss, acc, lr}.')
 
