@@ -126,7 +126,7 @@ def plot_confusion_matrix(y_true, y_pred, classes, cmap=plt.cm.Blues):
     return ax
 
 
-def plot_stats(stats, typ='loss', y_range=(0.0, 2.0)):
+def plot_stats(stats, typ='loss', y_range=None):
     epochs = len(list(stats.values())[0])
     x = range(epochs)
     if typ == 'loss':
