@@ -147,7 +147,7 @@ def plot_stats(stats, typ='loss', y_range=None, filename=None):
     else:
         raise ValueError('Typ should be one of {loss, acc, lr}.')
 
-    plt.axes().xaxis.set_major_locator(MaxNLocator(nbins='auto', min_n_ticks=10))
+    plt.axes().xaxis.set_major_locator(MaxNLocator(nbins='auto', integer=True, min_n_ticks=10))
     plt.axes().xaxis.set_minor_locator(AutoMinorLocator())
     plt.xlabel('Epoch')
     plt.legend()
