@@ -138,49 +138,49 @@ class EfficientUnet(nn.Module):
         return x
 
 
-def tailefficientunet_b0(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b0(*, n_classes: int, concat_input: bool = True, pretrained: bool = False):
     encoder = EfficientNet.encoder('efficientnet-b0', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def tailefficientunet_b1(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b1(*, n_classes: int, concat_input: bool = True, pretrained: bool = False):
     encoder = EfficientNet.encoder('efficientnet-b1', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def tailefficientunet_b2(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b2(*, n_classes: int, concat_input: bool = True, pretrained: bool = False):
     encoder = EfficientNet.encoder('efficientnet-b2', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def tailefficientunet_b3(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b3(*, n_classes: int, concat_input: bool = True, pretrained: bool = False):
     encoder = EfficientNet.encoder('efficientnet-b3', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def tailefficientunet_b4(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b4(*, n_classes: int, concat_input: bool = True, pretrained: bool = False):
     encoder = EfficientNet.encoder('efficientnet-b4', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def tailefficientunet_b5(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b5(*, n_classes: int, concat_input: bool = True, pretrained: bool = False):
     encoder = EfficientNet.encoder('efficientnet-b5', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def tailefficientunet_b6(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b6(*, n_classes: int, concat_input: bool = True, pretrained: bool = False):
     encoder = EfficientNet.encoder('efficientnet-b6', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
 
 
-def tailefficientunet_b7(*, n_classes: int, concat_input: bool = True, pretrained: bool = True):
+def tailefficientunet_b7(*, n_classes: int, concat_input: bool = True, pretrained: bool = False):
     encoder = EfficientNet.encoder('efficientnet-b7', pretrained=pretrained)
     model = EfficientUnet(encoder, out_channels=n_classes, concat_input=concat_input)
     return model
